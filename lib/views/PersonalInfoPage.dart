@@ -28,6 +28,7 @@ class PersonalInfoPageState extends State<PersonalInfoPage>
       body:
       SingleChildScrollView(
         child:Container(
+          color:Colors.white,
           width:MediaQuery.of(context).size.width,
           child:Column(
             crossAxisAlignment:CrossAxisAlignment.center,
@@ -42,37 +43,35 @@ class PersonalInfoPageState extends State<PersonalInfoPage>
   }
 
   Widget getCicleAvatar() {
+
     return Stack(
       children: [
-        Container(
-          width:100,
-          decoration:BoxDecoration(
-            shape:BoxShape.circle,
-            border:Border.all(width:2,color:Colors.black38),
-          ),
+        CircleAvatar(
+          radius:55,
+          backgroundColor:Colors.white,
           child:CircleAvatar(
-            radius:50,
-            backgroundColor:Colors.white,
-            child:Center(
-              child:Icon(Icons.account_circle_sharp,size:100,color:Colors.black38,),
+            backgroundColor:Colors.black87,
+            radius:36,
+            child:CircleAvatar(
+              radius:34,
+              backgroundColor:Colors.white,
+              child:Image.asset('assets/images/user_default.png'),
             ),
           ),
         ),
         Positioned(
-            right:0,
-            left:85,
-            top:0,
-            child:Container(
-              width:100,
-              height:100,
+            left:78,
+            top:42,
+            child:
+            Container(
+              width:22,
+              height:22,
               decoration:BoxDecoration(
-                  shape:BoxShape.circle,
-                  border:Border.all(width:1,color:Colors.black45)
+                color:Colors.white,
+                borderRadius:BorderRadius.circular(60.0),
+                border:Border.all(width:1,color:Colors.black87)
               ),
-              child:Center(
-                child:IconButton(icon:Icon(Icons.edit,size:20,),
-                    onPressed:(){}),
-              ),
+              child:Icon(Icons.edit,size:16,),
             )
         )
       ],
@@ -185,6 +184,14 @@ class PersonalInfoPageState extends State<PersonalInfoPage>
                 ),
               ),
               SizedBox(height:10,),
+              Text(StringsUtils.gender,style:GoogleFonts.notoSans(textStyle:TextStyle(fontSize:14,height:2,
+                  fontWeight:FontWeight.w700,color:Colors.black87))),
+              Row(
+                children: [
+
+                ],
+              ),
+              SizedBox(height:10,),
               Text(StringsUtils.password+'*',style:GoogleFonts.notoSans(textStyle:TextStyle(fontSize:14,height:2,
                   fontWeight:FontWeight.w700,color:Colors.black87))),
               SizedBox(height:4,),
@@ -194,7 +201,7 @@ class PersonalInfoPageState extends State<PersonalInfoPage>
                 child:TextField(
                   decoration:InputDecoration(
                       hintText:StringsUtils.password,
-                      prefixIcon:Icon(Icons.phone,color:Colors.black87,),
+                      prefixIcon:Icon(Icons.lock,color:Colors.black87,),
                       hintStyle:TextStyle(fontSize:14,
                           color:Colors.black38.withOpacity(0.2),fontWeight:FontWeight.w600,fontStyle:FontStyle.italic),
                       focusedBorder:OutlineInputBorder(
@@ -218,7 +225,7 @@ class PersonalInfoPageState extends State<PersonalInfoPage>
                 child:TextField(
                   decoration:InputDecoration(
                       hintText:StringsUtils.password,
-                      prefixIcon:Icon(Icons.phone,color:Colors.black87,),
+                      prefixIcon:Icon(Icons.lock,color:Colors.black87,),
                       hintStyle:TextStyle(fontSize:14,
                           color:Colors.black38.withOpacity(0.2),fontWeight:FontWeight.w600,fontStyle:FontStyle.italic),
                       focusedBorder:OutlineInputBorder(

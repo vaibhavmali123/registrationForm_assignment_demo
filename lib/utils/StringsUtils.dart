@@ -3,6 +3,7 @@ class StringsUtils
   static String users='Users';
   static String register='Register';
   static String yourInfo='Your Info';
+  static String youraddress='Your Address';
   static String noRegisterations='No registerations found';
   static String firstName='First Name';
   static String lastName='Last Name';

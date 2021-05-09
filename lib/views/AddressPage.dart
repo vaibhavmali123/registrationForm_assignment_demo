@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:registrationform_assignment/utils/ColorUtils.dart';
 import 'package:registrationform_assignment/utils/StringsUtils.dart';
 
 class AddressPage extends StatefulWidget
@@ -9,11 +10,17 @@ class AddressPage extends StatefulWidget
 
 class AddressPageState extends State<AddressPage>
 {
-  List<String>listEducation=['Post Graduate',
-    'Graduate',
-    'HSC/Diploma',
-    'SSC'
+  List<String>listState=[
+  'Maharashtra',
+  'Gujarat',
+  'Karnataka',
+  'Madhya Pradesh',
+    'Delhi',
+    'Others'
   ];
+
+  var selectedState;
+
   @override
   Widget build(BuildContext context)
   {
@@ -26,7 +33,7 @@ class AddressPageState extends State<AddressPage>
           Navigator.pop(context);
         },color:Colors.black87,),
 
-        title:Text(StringsUtils.yourInfo,style:GoogleFonts.notoSans(textStyle:TextStyle(fontSize:20,
+        title:Text(StringsUtils.youraddress,style:GoogleFonts.notoSans(textStyle:TextStyle(fontSize:20,
             fontWeight:FontWeight.w800,color:Colors.black87)),),
       ),
       body:SingleChildScrollView(
@@ -114,7 +121,7 @@ class AddressPageState extends State<AddressPage>
                   ),
                 ),
               ),
-              SizedBox(height:4,),
+              SizedBox(height:22,),
               Container(
                 height: 54,
                 width: MediaQuery.of(context).size.width / 1.2,
@@ -131,7 +138,7 @@ class AddressPageState extends State<AddressPage>
                           )
                       ),
                       child:DropdownButton<String>(
-                        value:selectedEducation,
+                        value:selectedState,
                         underline: Container(
                           height: 1.0,
                           decoration: const BoxDecoration(
@@ -146,10 +153,10 @@ class AddressPageState extends State<AddressPage>
                         icon:Icon(Icons.arrow_circle_down_rounded),
                         onChanged:(value){
                           setState(() {
-                            selectedEducation=value;
+                            selectedState=value;
                           });
                         },
-                        items:listEducation
+                        items:listState
                             .map<DropdownMenuItem<String>>((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
@@ -192,7 +199,21 @@ class AddressPageState extends State<AddressPage>
                   ),
                 ),
               ),
-
+              SizedBox(height:35,),
+              SizedBox(
+                height:50,
+                width:MediaQuery.of(context).size.width/1.2,
+                child:RaisedButton(
+                  shape:RoundedRectangleBorder(),
+                  color:ColorUtils.colorConvert(ColorUtils.primaryColor),
+                  child:Text(StringsUtils.next,style:GoogleFonts.notoSans(textStyle:
+                  TextStyle(fontSize:16,height:2,
+                      fontWeight:FontWeight.w700,color:Colors.white))),
+                  onPressed:(){
+                    Navigator.pushNamed(context,'/AddressPage');
+                  },
+                ),
+              )
             ],
           )
         ],
