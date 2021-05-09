@@ -18,4 +18,33 @@ class StringsUtils
   static String confirmPassword='Confirm Password';
 
   static String next='Next';
+  static String previous='Previous';
+  static String eduInfo='Educational Info';
+  static String education='Education';
+
+  static String selectQualification='Select your qualification';
+  static String yearPassing='Year of passing';
+  static String enterYear='Enter Year of passing';
+  static String grade='Grade';
+  static String enterPercent='Enter your percentage';
+  static String professionalInfo='Professional Info';
+  static String experience='Experience';
+
+  static String designation='Designation';
+  static String domain='Domain';
+
+  static String enterExperience='Enter your experience';
+  static String enterDesignation='Select your designation';
+  static String enterDomain='Select your domain';
+
+  static String address='Address';
+  static String landmark='Landmark';
+  static String city='City';
+  static String selectState='Selecte Your state';
+  static String pin='Pin Code';
+  static String submit='Submit';
+
+
+
+
 }

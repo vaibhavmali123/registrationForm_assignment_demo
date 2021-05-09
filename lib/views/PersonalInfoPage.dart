@@ -243,7 +243,7 @@ class PersonalInfoPageState extends State<PersonalInfoPage>
                   TextStyle(fontSize:16,height:2,
                       fontWeight:FontWeight.w700,color:Colors.white))),
                   onPressed:(){
-
+                    Navigator.pushNamed(context,'/ProfessionaInfoPage');
                   },
                 ),
               )
