@@ -1,4 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:registrationform_assignment/Models/Users.dart';
 import 'package:registrationform_assignment/blocs/UsersBloc.dart';
 import 'package:registrationform_assignment/providers/InheritedDataProvider.dart';
@@ -25,6 +29,8 @@ final fNameEditingCtrl=TextEditingController();
   final emailEditingCtrl=TextEditingController();
   final passwordEditingCtrl=TextEditingController();
   final confirmPasswordEditingCtrl=TextEditingController();
+  final picker=ImagePicker();
+  File image,croppedImage;
 
   @override
   Widget build(BuildContext context) {
@@ -60,38 +66,44 @@ final fNameEditingCtrl=TextEditingController();
 
   Widget getCicleAvatar() {
 
-    return Stack(
-      children: [
-        CircleAvatar(
-          radius:55,
-          backgroundColor:Colors.white,
-          child:CircleAvatar(
-            backgroundColor:Colors.black87,
-            radius:36,
-            child:CircleAvatar(
-              radius:34,
+    return
+      GestureDetector(
+        onTap:(){
+          _showPicker(context);
+        },
+        child:Stack(
+          children: [
+            CircleAvatar(
+              radius:55,
               backgroundColor:Colors.white,
-              child:Image.asset('assets/images/user_default.png'),
-            ),
-          ),
-        ),
-        Positioned(
-            left:78,
-            top:42,
-            child:
-            Container(
-              width:22,
-              height:22,
-              decoration:BoxDecoration(
-                color:Colors.white,
-                borderRadius:BorderRadius.circular(60.0),
-                border:Border.all(width:1,color:Colors.black87)
+              child:CircleAvatar(
+                backgroundColor:Colors.black87,
+                radius:36,
+                child:CircleAvatar(
+                  radius:34,
+                  backgroundColor:Colors.white,
+                  child:Image.asset('assets/images/user_default.png'),
+                ),
               ),
-              child:Icon(Icons.edit,size:16,),
+            ),
+            Positioned(
+                left:78,
+                top:42,
+                child:
+                Container(
+                  width:22,
+                  height:22,
+                  decoration:BoxDecoration(
+                      color:Colors.white,
+                      borderRadius:BorderRadius.circular(60.0),
+                      border:Border.all(width:1,color:Colors.black87)
+                  ),
+                  child:Icon(Icons.edit,size:16,),
+                )
             )
-        )
-      ],
-    );
+          ],
+        ),
+      );
   }
 
   Widget getForm() {
@@ -319,5 +331,101 @@ final fNameEditingCtrl=TextEditingController();
         ],
       ),
     );
+  }
+
+  Future getImageFromCamera() async{
+    final pickedFile=await picker.getImage(source: ImageSource.camera);
+    setState(() {
+      if(pickedFile!=null){
+        image = File(pickedFile.path);
+        _cropImage();
+
+        croppedImage=image;
+      }
+    });
+  }
+
+
+  void _showPicker(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext bc) {
+          return SafeArea(
+            child: Container(
+              child: new Wrap(
+                children: <Widget>[
+                  new ListTile(
+                      leading: new Icon(Icons.photo_library),
+                      title: new Text('Photo Library'),
+                      onTap: () {
+                        getImageFromGallery();
+                        Navigator.of(context).pop();
+                      }),
+                  new ListTile(
+                    leading: new Icon(Icons.photo_camera),
+                    title: new Text('Camera'),
+                    onTap: () {
+                      getImageFromCamera();
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+    );
+  }
+
+  Future getImageFromGallery() async{
+    final pickedFile=await picker.getImage(source: ImageSource.gallery);
+    setState(() {
+      if(pickedFile!=null){
+        image = File(pickedFile.path);
+        _cropImage();
+        croppedImage=image;
+      }
+    });
+  }
+
+  Future<Null> _cropImage() async{
+    File croppedFile=await ImageCropper.cropImage(
+        sourcePath:image.path,
+        cropStyle:CropStyle.circle,
+        maxWidth:200,
+        maxHeight:200,
+        aspectRatioPresets: Platform.isAndroid
+            ? [
+          CropAspectRatioPreset.square,
+          CropAspectRatioPreset.ratio3x2,
+          CropAspectRatioPreset.original,
+          CropAspectRatioPreset.ratio4x3,
+          CropAspectRatioPreset.ratio16x9
+        ]
+            : [
+          CropAspectRatioPreset.original,
+          CropAspectRatioPreset.square,
+          CropAspectRatioPreset.ratio3x2,
+          CropAspectRatioPreset.ratio4x3,
+          CropAspectRatioPreset.ratio5x3,
+          CropAspectRatioPreset.ratio5x4,
+          CropAspectRatioPreset.ratio7x5,
+          CropAspectRatioPreset.ratio16x9
+        ],
+        androidUiSettings: AndroidUiSettings(
+            toolbarTitle: 'Cropper',
+            toolbarColor:ColorUtils.colorConvert(ColorUtils.primaryColor),
+            toolbarWidgetColor: Colors.white,
+            initAspectRatio: CropAspectRatioPreset.ratio5x4,
+            lockAspectRatio: false),
+        iosUiSettings: IOSUiSettings(
+          title: 'Cropper',
+        ));
+    if (croppedFile != null) {
+      setState(() {
+        croppedImage = croppedFile;
+        // uploadImage("ShubhamLarotiImage","https://xy2y3lhble.execute-api.ap-south-1.amazonaws.com/dev");
+      });
+    }
   }
 }

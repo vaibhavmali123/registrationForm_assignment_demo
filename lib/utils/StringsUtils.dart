@@ -47,6 +47,7 @@ class StringsUtils
   static String selectState='Selecte Your state';
   static String pin='Pin Code';
   static String submit='Submit';
+  static String basicInfo='Basic Info';
 
 
 
