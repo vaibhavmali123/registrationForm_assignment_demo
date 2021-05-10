@@ -15,6 +15,9 @@ class StringsUtils
   static String enterEmail='Enter your email here';
 
   static String gender='Gender';
+  static String male='Male';
+  static String female='Female';
+
   static String password='Password';
   static String confirmPassword='Confirm Password';
 

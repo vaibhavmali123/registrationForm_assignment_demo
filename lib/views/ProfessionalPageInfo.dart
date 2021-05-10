@@ -1,16 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:registrationform_assignment/Models/Users.dart';
 import 'package:registrationform_assignment/utils/ColorUtils.dart';
 import 'package:registrationform_assignment/utils/StringsUtils.dart';
 import 'package:intl/intl.dart';
+import 'package:registrationform_assignment/views/AddressPage.dart';
 
 class ProfessionalPageInfo extends StatefulWidget
 {
-  ProfessionalPageInfoState createState()=> ProfessionalPageInfoState();
+  Users users=Users();
+
+  ProfessionalPageInfo({this.users});
+
+  ProfessionalPageInfoState createState()=> ProfessionalPageInfoState(users:users);
 }
 
 class ProfessionalPageInfoState extends State<ProfessionalPageInfo>
 {
+  Users users=Users();
+  final yearPassingEditingController=TextEditingController();
+  final gradeEditingController=TextEditingController();
+  final designationEditingController=TextEditingController();
+  final experienceEditingController=TextEditingController();
+  final domainEditingController=TextEditingController();
+
+  ProfessionalPageInfoState({this.users});
+
   List<String>listEducation=['Post Graduate',
     'Graduate',
   'HSC/Diploma',
@@ -34,6 +49,7 @@ class ProfessionalPageInfoState extends State<ProfessionalPageInfo>
       ),
       body:SingleChildScrollView(
         child:Container(
+          color:Colors.white,
           width:MediaQuery.of(context).size.width,
           child:
           Column(
@@ -92,7 +108,7 @@ class ProfessionalPageInfoState extends State<ProfessionalPageInfo>
                       focusColor: Colors.white,
                       style: TextStyle(color: Colors.white),
                       iconEnabledColor: Colors.black,
-                      icon:Icon(Icons.arrow_circle_down_rounded),
+                      icon:Image.asset('assets/images/sort-down.png',height:22,width:18,),
                       onChanged:(value){
                         setState(() {
                           selectedEducation=value;
@@ -128,6 +144,7 @@ class ProfessionalPageInfoState extends State<ProfessionalPageInfo>
                 height:55,
                 width:MediaQuery.of(context).size.width/1.2,
                 child:TextField(
+                  controller:yearPassingEditingController,
                   decoration:InputDecoration(
                       hintText:StringsUtils.enterYear,
                       hintStyle:TextStyle(fontSize:14,
@@ -151,6 +168,7 @@ class ProfessionalPageInfoState extends State<ProfessionalPageInfo>
                 height:55,
                 width:MediaQuery.of(context).size.width/1.2,
                 child:TextField(
+                  controller:gradeEditingController,
                   decoration:InputDecoration(
                       hintText:StringsUtils.enterPercent,
                       hintStyle:TextStyle(fontSize:14,
@@ -193,6 +211,7 @@ class ProfessionalPageInfoState extends State<ProfessionalPageInfo>
                 height:55,
                 width:MediaQuery.of(context).size.width/1.2,
                 child:TextField(
+                  controller:experienceEditingController,
                   decoration:InputDecoration(
                       hintText:StringsUtils.enterExperience,
                       hintStyle:TextStyle(fontSize:14,
@@ -212,120 +231,48 @@ class ProfessionalPageInfoState extends State<ProfessionalPageInfo>
               Text(StringsUtils.designation+'*',style:GoogleFonts.notoSans(textStyle:TextStyle(fontSize:14,height:2,
                   fontWeight:FontWeight.w700,color:Colors.black87))),
               SizedBox(height:4,),
-              Container(
-                height: 54,
-                width: MediaQuery.of(context).size.width / 1.2,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(0.0),
-                    border: Border.all(width:1.2, color: Colors.black87)),
-                child: Center(
-                    child:
-                    Theme(
-                      data:Theme.of(context).copyWith(
-                          canvasColor:Colors.white,
-                          buttonTheme:ButtonTheme.of(context).copyWith(
-                            alignedDropdown:true,
-                          )
+              SizedBox(
+                height:55,
+                width:MediaQuery.of(context).size.width/1.2,
+                child:TextField(
+                  controller:designationEditingController,
+                  decoration:InputDecoration(
+                      hintText:StringsUtils.enterDesignation,
+                      hintStyle:TextStyle(fontSize:14,
+                          color:Colors.black38.withOpacity(0.2),fontWeight:FontWeight.w600,fontStyle:FontStyle.italic),
+                      focusedBorder:OutlineInputBorder(
+                          borderRadius:BorderRadius.circular(2.0),
+                          borderSide:BorderSide(width:1.6,color:Colors.black87)
                       ),
-                      child:DropdownButton<String>(
-                        value:selectedEducation,
-                        underline: Container(
-                          height: 1.0,
-                          decoration: const BoxDecoration(
-                              border: Border(
-                                  bottom:
-                                  BorderSide(color: Colors.transparent, width: 0.0))),
-                        ),
-                        isExpanded: true,
-                        focusColor: Colors.white,
-                        style: TextStyle(color: Colors.white),
-                        iconEnabledColor: Colors.black,
-                        icon:Icon(Icons.arrow_circle_down_rounded),
-                        onChanged:(value){
-                          setState(() {
-                            selectedEducation=value;
-                          });
-                        },
-                        items:listEducation
-                            .map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(
-                              value,
-                              style: TextStyle(
-                                  color: Colors.black87, fontWeight: FontWeight.w500),
-                            ),
-                          );
-                        }).toList(),
-                        hint: Text(
-                          StringsUtils.enterDesignation,
-                          style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.black54,
-                              fontWeight: FontWeight.w500),
-                        ),
-                      ),
-                    )
+                      enabledBorder:OutlineInputBorder(
+                          borderRadius:BorderRadius.circular(2.0),
+                          borderSide:BorderSide(width:1.2,color:Colors.black87)
+                      )
+                  ),
                 ),
               ),
               SizedBox(height:5,),
               Text(StringsUtils.domain+'*',style:GoogleFonts.notoSans(textStyle:TextStyle(fontSize:14,height:2,
                   fontWeight:FontWeight.w700,color:Colors.black87))),
               SizedBox(height:4,),
-              Container(
-                height: 54,
-                width: MediaQuery.of(context).size.width / 1.2,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(0.0),
-                    border: Border.all(width:1.2, color: Colors.black87)),
-                child: Center(
-                    child:
-                    Theme(
-                      data:Theme.of(context).copyWith(
-                          canvasColor:Colors.white,
-                          buttonTheme:ButtonTheme.of(context).copyWith(
-                            alignedDropdown:true,
-                          )
+              SizedBox(
+                height:55,
+                width:MediaQuery.of(context).size.width/1.2,
+                child:TextField(
+                  controller:domainEditingController,
+                  decoration:InputDecoration(
+                      hintText:StringsUtils.enterDomain,
+                      hintStyle:TextStyle(fontSize:14,
+                          color:Colors.black38.withOpacity(0.2),fontWeight:FontWeight.w600,fontStyle:FontStyle.italic),
+                      focusedBorder:OutlineInputBorder(
+                          borderRadius:BorderRadius.circular(2.0),
+                          borderSide:BorderSide(width:1.6,color:Colors.black87)
                       ),
-                      child:DropdownButton<String>(
-                        value:selectedEducation,
-                        underline: Container(
-                          height: 1.0,
-                          decoration: const BoxDecoration(
-                              border: Border(
-                                  bottom:
-                                  BorderSide(color: Colors.transparent, width: 0.0))),
-                        ),
-                        isExpanded: true,
-                        focusColor: Colors.white,
-                        style: TextStyle(color: Colors.white),
-                        iconEnabledColor: Colors.black,
-                        icon:Icon(Icons.arrow_circle_down_rounded),
-                        onChanged:(value){
-                          setState(() {
-                            selectedEducation=value;
-                          });
-                        },
-                        items:listEducation
-                            .map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(
-                              value,
-                              style: TextStyle(
-                                  color: Colors.black87, fontWeight: FontWeight.w500),
-                            ),
-                          );
-                        }).toList(),
-                        hint: Text(
-                          StringsUtils.enterDomain,
-                          style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.black54,
-                              fontWeight: FontWeight.w500),
-                        ),
-                      ),
-                    )
+                      enabledBorder:OutlineInputBorder(
+                          borderRadius:BorderRadius.circular(2.0),
+                          borderSide:BorderSide(width:1.2,color:Colors.black87)
+                      )
+                  ),
                 ),
               ),
               SizedBox(height:14,),
@@ -365,7 +312,18 @@ class ProfessionalPageInfoState extends State<ProfessionalPageInfo>
                         TextStyle(fontSize:16,height:2,
                             fontWeight:FontWeight.w700,color:Colors.white))),
                         onPressed:(){
-                          Navigator.pushNamed(context,'/AddressPage');
+                          users.eduInfo=selectedEducation.toString();
+                          users.yearOfPass=yearPassingEditingController.text;
+                          users.grade=gradeEditingController.text;
+                          users.experience=experienceEditingController.text;
+                          users.designation=designationEditingController.text;
+                          users.domain=domainEditingController.text;
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder:(context){
+                              return AddressPage(users:users,);
+                            }
+                          ));
+                          //Navigator.pushNamed(context,'/AddressPage');
                         },
                       ),
                     )
