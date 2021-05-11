@@ -7,11 +7,14 @@ This project is about to registration form demo.
 
 Software & IDE Requirements
         <h2>ScreenShots<h2>
-        <img src="screenshots/HomePage.jpg"img src/>        
-        <img src="screenshots/Dialog.jpg"img src/>        
-        <img src="screenshots/BasicDetails.jpg"img src/>        
-        <img src="screenshots/Professional Details.jpg"img src/>        
-        <img src="screenshots/AddressDetails.jpg"img src/>        
+        <div>
+        <img src="screenshots/HomePage.jpg" width=256 style="display:inline-block"/>
+        <img src="screenshots/Dialog.jpg" width=256 style="display:inline-block"/>
+        <img src="screenshots/BasicDetails.jpg" width=256 style="display:inline-block"/>
+        <img src="screenshots/Professional Details.jpg" width=256 style="display:inline-block"/>
+        <img src="screenshots/AddressDetails.jpg" width=256 style="display:inline-block"/>
+        </div>
+
                               
         * This project is developed and below software & Ide configuration
         
