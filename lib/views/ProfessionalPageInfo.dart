@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:registrationform_assignment/Models/Users.dart';
 import 'package:registrationform_assignment/utils/ColorUtils.dart';
@@ -14,6 +15,7 @@ class ProfessionalPageInfo extends StatefulWidget
 
   ProfessionalPageInfoState createState()=> ProfessionalPageInfoState(users:users);
 }
+enum Fields{YearOfPass,Grade,Experience,Designation,Domain}
 
 class ProfessionalPageInfoState extends State<ProfessionalPageInfo>
 {
@@ -32,6 +34,9 @@ class ProfessionalPageInfoState extends State<ProfessionalPageInfo>
     'SSC'
   ];
   var selectedEducation;
+  final GlobalKey<FormState>_formKey=GlobalKey<FormState>();
+  bool autoValidate=false;
+
   @override
   Widget build(BuildContext context) {
 
@@ -54,9 +59,16 @@ class ProfessionalPageInfoState extends State<ProfessionalPageInfo>
           child:
           Column(
             children: [
-              getEducationalInfo(),
-              SizedBox(height:14,),
-              getProfessionalInfo()
+              Form(
+                  key:_formKey,
+                  autovalidate:autoValidate,
+                  child:Column(
+                    children: [
+                      getEducationalInfo(),
+                      SizedBox(height:14,),
+                      getProfessionalInfo()
+                    ],
+                  ))
             ],
           )
         ),
@@ -112,6 +124,7 @@ class ProfessionalPageInfoState extends State<ProfessionalPageInfo>
                       onChanged:(value){
                         setState(() {
                           selectedEducation=value;
+                          FocusScope.of(context).requestFocus(new FocusNode());
                         });
                       },
                       items:listEducation
@@ -129,7 +142,7 @@ class ProfessionalPageInfoState extends State<ProfessionalPageInfo>
                         StringsUtils.eduInfo,
                         style: TextStyle(
                             fontSize: 14,
-                            color: Colors.black54,
+                            color:autoValidate==true && selectedEducation==null?Colors.red:Colors.black54,
                             fontWeight: FontWeight.w500),
                       ),
                     ),
@@ -141,22 +154,24 @@ class ProfessionalPageInfoState extends State<ProfessionalPageInfo>
                   fontWeight:FontWeight.w700,color:Colors.black87))),
               SizedBox(height:4,),
               SizedBox(
-                height:55,
+                height:80,
                 width:MediaQuery.of(context).size.width/1.2,
-                child:TextField(
+                child:TextFormField(
                   controller:yearPassingEditingController,
+                  keyboardType:TextInputType.number,
+                  inputFormatters:<TextInputFormatter>[
+                    FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                  ],
+                  validator:(arg)=>validateField(arg:arg,fields:Fields.YearOfPass),
                   decoration:InputDecoration(
                       hintText:StringsUtils.enterYear,
                       hintStyle:TextStyle(fontSize:14,
                           color:Colors.black38.withOpacity(0.2),fontWeight:FontWeight.w600,fontStyle:FontStyle.italic),
-                      focusedBorder:OutlineInputBorder(
-                          borderRadius:BorderRadius.circular(2.0),
-                          borderSide:BorderSide(width:1.6,color:Colors.black87)
-                      ),
-                      enabledBorder:OutlineInputBorder(
-                          borderRadius:BorderRadius.circular(2.0),
-                          borderSide:BorderSide(width:1.2,color:Colors.black87)
-                      )
+                      focusedBorder:focusedBorder,
+                      enabledBorder:enabledBorder,
+                      helperText:' ',
+                      errorBorder:errorBorder,
+                    focusedErrorBorder:errorBorder
                   ),
                 ),
               ),
@@ -165,22 +180,20 @@ class ProfessionalPageInfoState extends State<ProfessionalPageInfo>
                   fontWeight:FontWeight.w700,color:Colors.black87))),
               SizedBox(height:4,),
               SizedBox(
-                height:55,
+                height:80,
                 width:MediaQuery.of(context).size.width/1.2,
-                child:TextField(
+                child:TextFormField(
                   controller:gradeEditingController,
+                  validator:(arg)=>validateField(arg:arg,fields:Fields.Grade),
                   decoration:InputDecoration(
                       hintText:StringsUtils.enterPercent,
                       hintStyle:TextStyle(fontSize:14,
                           color:Colors.black38.withOpacity(0.2),fontWeight:FontWeight.w600,fontStyle:FontStyle.italic),
-                      focusedBorder:OutlineInputBorder(
-                          borderRadius:BorderRadius.circular(2.0),
-                          borderSide:BorderSide(width:1.6,color:Colors.black87)
-                      ),
-                      enabledBorder:OutlineInputBorder(
-                          borderRadius:BorderRadius.circular(2.0),
-                          borderSide:BorderSide(width:1.2,color:Colors.black87)
-                      )
+                      focusedBorder:focusedBorder,
+                      enabledBorder:enabledBorder,
+                      helperText:' ',
+                      errorBorder:errorBorder,
+                      focusedErrorBorder:errorBorder
                   ),
                 ),
               ),
@@ -208,22 +221,20 @@ class ProfessionalPageInfoState extends State<ProfessionalPageInfo>
                   fontWeight:FontWeight.w700,color:Colors.black87))),
               SizedBox(height:4,),
               SizedBox(
-                height:55,
+                height:80,
                 width:MediaQuery.of(context).size.width/1.2,
-                child:TextField(
+                child:TextFormField(
                   controller:experienceEditingController,
+                  validator:(arg)=>validateField(arg:arg,fields:Fields.Experience),
                   decoration:InputDecoration(
                       hintText:StringsUtils.enterExperience,
                       hintStyle:TextStyle(fontSize:14,
                           color:Colors.black38.withOpacity(0.2),fontWeight:FontWeight.w600,fontStyle:FontStyle.italic),
-                      focusedBorder:OutlineInputBorder(
-                          borderRadius:BorderRadius.circular(2.0),
-                          borderSide:BorderSide(width:1.6,color:Colors.black87)
-                      ),
-                      enabledBorder:OutlineInputBorder(
-                          borderRadius:BorderRadius.circular(2.0),
-                          borderSide:BorderSide(width:1.2,color:Colors.black87)
-                      )
+                      focusedBorder:focusedBorder,
+                      enabledBorder:enabledBorder,
+                      errorBorder:errorBorder,
+                      helperText:' ',
+                      focusedErrorBorder:errorBorder
                   ),
                 ),
               ),
@@ -232,22 +243,20 @@ class ProfessionalPageInfoState extends State<ProfessionalPageInfo>
                   fontWeight:FontWeight.w700,color:Colors.black87))),
               SizedBox(height:4,),
               SizedBox(
-                height:55,
+                height:80,
                 width:MediaQuery.of(context).size.width/1.2,
-                child:TextField(
+                child:TextFormField(
                   controller:designationEditingController,
+                  validator:(arg)=>validateField(arg:arg,fields:Fields.Designation),
                   decoration:InputDecoration(
                       hintText:StringsUtils.enterDesignation,
                       hintStyle:TextStyle(fontSize:14,
                           color:Colors.black38.withOpacity(0.2),fontWeight:FontWeight.w600,fontStyle:FontStyle.italic),
-                      focusedBorder:OutlineInputBorder(
-                          borderRadius:BorderRadius.circular(2.0),
-                          borderSide:BorderSide(width:1.6,color:Colors.black87)
-                      ),
-                      enabledBorder:OutlineInputBorder(
-                          borderRadius:BorderRadius.circular(2.0),
-                          borderSide:BorderSide(width:1.2,color:Colors.black87)
-                      )
+                      focusedBorder:focusedBorder,
+                      helperText:' ',
+                      enabledBorder:enabledBorder,
+                      errorBorder:errorBorder,
+                      focusedErrorBorder:errorBorder
                   ),
                 ),
               ),
@@ -256,22 +265,20 @@ class ProfessionalPageInfoState extends State<ProfessionalPageInfo>
                   fontWeight:FontWeight.w700,color:Colors.black87))),
               SizedBox(height:4,),
               SizedBox(
-                height:55,
+                height:80,
                 width:MediaQuery.of(context).size.width/1.2,
-                child:TextField(
+                child:TextFormField(
                   controller:domainEditingController,
+                  validator:(arg)=>validateField(arg:arg,fields:Fields.Domain),
                   decoration:InputDecoration(
                       hintText:StringsUtils.enterDomain,
                       hintStyle:TextStyle(fontSize:14,
                           color:Colors.black38.withOpacity(0.2),fontWeight:FontWeight.w600,fontStyle:FontStyle.italic),
-                      focusedBorder:OutlineInputBorder(
-                          borderRadius:BorderRadius.circular(2.0),
-                          borderSide:BorderSide(width:1.6,color:Colors.black87)
-                      ),
-                      enabledBorder:OutlineInputBorder(
-                          borderRadius:BorderRadius.circular(2.0),
-                          borderSide:BorderSide(width:1.2,color:Colors.black87)
-                      )
+                      focusedBorder:focusedBorder,
+                      enabledBorder:enabledBorder,
+                      helperText:' ',
+                      errorBorder:errorBorder,
+                      focusedErrorBorder:errorBorder
                   ),
                 ),
               ),
@@ -312,17 +319,19 @@ class ProfessionalPageInfoState extends State<ProfessionalPageInfo>
                         TextStyle(fontSize:16,height:2,
                             fontWeight:FontWeight.w700,color:Colors.white))),
                         onPressed:(){
-                          users.eduInfo=selectedEducation.toString();
-                          users.yearOfPass=yearPassingEditingController.text;
-                          users.grade=gradeEditingController.text;
-                          users.experience=experienceEditingController.text;
-                          users.designation=designationEditingController.text;
-                          users.domain=domainEditingController.text;
-                          Navigator.of(context).push(MaterialPageRoute(
-                            builder:(context){
-                              return AddressPage(users:users,);
-                            }
-                          ));
+
+                          if (_formKey.currentState.validate()) {
+                            _formKey.currentState.save();
+                            setState(() {
+                              autoValidate = true;
+                            });
+                          }
+                          if (selectedEducation!=null && yearPassingEditingController.text.length>0 &&
+                          gradeEditingController.text.length>0 && experienceEditingController.text.length>0 &&
+                          designationEditingController.text.length>0 && domainEditingController.text.length>0) {
+                            addDataAndNavigate();
+                            print("selectedEducation ${selectedEducation}");
+                          }
                           //Navigator.pushNamed(context,'/AddressPage');
                         },
                       ),
@@ -335,6 +344,78 @@ class ProfessionalPageInfoState extends State<ProfessionalPageInfo>
         ],
       ),
     );
+  }
+  var errorBorder=OutlineInputBorder(
+      borderRadius:BorderRadius.circular(2.0),
+      borderSide:BorderSide(width:1.6,color:Colors.red));
 
+  var focusedBorder=OutlineInputBorder(
+      borderRadius:BorderRadius.circular(2.0),
+      borderSide:BorderSide(width:1.6,color:Colors.black87)
+  );
+  var enabledBorder=OutlineInputBorder(
+      borderRadius:BorderRadius.circular(2.0),
+      borderSide:BorderSide(width:1.4,color:Colors.black87)
+  );
+
+  validateField({String arg, Fields fields})
+  {
+    switch(fields){
+      case Fields.YearOfPass:
+        if (arg.length<=0) {
+          return 'Year of passing should not empty';
+        }
+        else{
+          return null;
+        }
+        break;
+      case Fields.Grade:
+        if (arg.length<=0) {
+          return 'Grade should not empty';
+        }
+        else{
+          return null;
+        }
+        break;
+      case Fields.Experience:
+        if (arg.length<=0) {
+          return 'Experience should not empty';
+        }
+        else{
+          return null;
+        }
+        break;
+      case Fields.Designation:
+        if (arg.length<=0) {
+          return 'Designation should not empty';
+        }
+        else{
+          return null;
+        }
+        break;
+      case Fields.Domain:
+        if (arg.length<=0) {
+          return 'Domain should not empty';
+        }
+        else{
+          return null;
+        }
+        break;
+
+  }
+}
+
+  void addDataAndNavigate() {
+    users.eduInfo=selectedEducation.toString();
+    users.yearOfPass=yearPassingEditingController.text;
+    users.grade=gradeEditingController.text;
+    users.experience=experienceEditingController.text.toString();
+    users.designation=designationEditingController.text;
+    users.domain=domainEditingController.text.toString();
+    Navigator.of(context).push(MaterialPageRoute(
+        builder:(context){
+          return AddressPage(users:users,);
+        }
+    ));
   }
 }

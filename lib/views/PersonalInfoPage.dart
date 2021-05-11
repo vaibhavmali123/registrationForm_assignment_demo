@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:registrationform_assignment/Models/Users.dart';
@@ -18,10 +19,12 @@ class PersonalInfoPage extends StatefulWidget{
 }
 enum GenderEnum{Male,Female}
 enum FieldError { Empty, Invalid }
+enum Fields{Fname,lname,Mno,Email,Gender,Password,ConfirmPassord}
 
 class PersonalInfoPageState extends State<PersonalInfoPage>
 {
   var selectedGender;
+  bool isValidate=false,isEmailValid,ispasswordValid,isConfirmPassword,isVisible=false;
 final usersBloc=UsersBloc();
 final fNameEditingCtrl=TextEditingController();
   final lNameEditingCtrl=TextEditingController();
@@ -31,6 +34,9 @@ final fNameEditingCtrl=TextEditingController();
   final confirmPasswordEditingCtrl=TextEditingController();
   final picker=ImagePicker();
   File image,croppedImage;
+
+  final GlobalKey<FormState>_formKey=GlobalKey<FormState>();
+  bool autoValidate=false;
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +62,10 @@ final fNameEditingCtrl=TextEditingController();
             crossAxisAlignment:CrossAxisAlignment.center,
             children: [
               getCicleAvatar(),
-              getForm()
+              Form(
+                  key:_formKey,
+                  autovalidate:autoValidate,
+                  child:getForm())
             ],
           ),
         ),
@@ -82,7 +91,10 @@ final fNameEditingCtrl=TextEditingController();
                 child:CircleAvatar(
                   radius:34,
                   backgroundColor:Colors.white,
-                  child:Image.asset('assets/images/user_default.png'),
+                  child:croppedImage==null?
+                  Image.asset('assets/images/user_default.png'):ClipOval(
+                    child:Image.file(File(croppedImage.path)),
+                  ),
                 ),
               ),
             ),
@@ -119,48 +131,48 @@ final fNameEditingCtrl=TextEditingController();
                   fontWeight:FontWeight.w700,color:Colors.black87))),
               SizedBox(height:4,),
               SizedBox(
-                height:55,
+                height:80,
                 width:MediaQuery.of(context).size.width/1.2,
-                child:TextField(
+                child:TextFormField(
                   controller:fNameEditingCtrl,
+                  validator:(arg)=>validateField(arg:arg,fields:Fields.Fname),
+                  inputFormatters:<TextInputFormatter>[
+                    FilteringTextInputFormatter.allow(RegExp(r'[a-z]')),
+                  ],
                   decoration:InputDecoration(
                       hintText:StringsUtils.enterFname,
+                      helperText:'',
                       prefixIcon:Icon(Icons.supervised_user_circle,color:Colors.black87,),
                       hintStyle:TextStyle(fontSize:14,
                           color:Colors.black38.withOpacity(0.2),fontWeight:FontWeight.w600,fontStyle:FontStyle.italic),
-                      focusedBorder:OutlineInputBorder(
-                          borderRadius:BorderRadius.circular(2.0),
-                          borderSide:BorderSide(width:1.6,color:Colors.black87)
-                      ),
-                      enabledBorder:OutlineInputBorder(
-                          borderRadius:BorderRadius.circular(2.0),
-                          borderSide:BorderSide(width:1.4,color:Colors.black87)
-                      )
+                     focusedErrorBorder:errorBorder,
+                      errorBorder:errorBorder,
+                      focusedBorder:focusedBorder,
+                      enabledBorder:enabledBorder
                   ),
                 ),
               ),
+
               SizedBox(height:10,),
               Text(StringsUtils.lastName+'*',style:GoogleFonts.notoSans(textStyle:TextStyle(fontSize:14,height:2,
                   fontWeight:FontWeight.w700,color:Colors.black87))),
               SizedBox(height:4,),
               SizedBox(
-                height:55,
+                height:80,
                 width:MediaQuery.of(context).size.width/1.2,
-                child:TextField(
+                child:TextFormField(
                   controller:lNameEditingCtrl,
+                  validator:(arg)=>validateField(arg:arg,fields:Fields.lname),
                   decoration:InputDecoration(
                       hintText:StringsUtils.enterLname,
+                      helperText:' ',
                       prefixIcon:Icon(Icons.supervised_user_circle,color:Colors.black87,),
                       hintStyle:TextStyle(fontSize:14,
                           color:Colors.black38.withOpacity(0.2),fontWeight:FontWeight.w600,fontStyle:FontStyle.italic),
-                      focusedBorder:OutlineInputBorder(
-                          borderRadius:BorderRadius.circular(2.0),
-                          borderSide:BorderSide(width:1.6,color:Colors.black87)
-                      ),
-                      enabledBorder:OutlineInputBorder(
-                          borderRadius:BorderRadius.circular(2.0),
-                          borderSide:BorderSide(width:1.4,color:Colors.black87)
-                      )
+                      focusedBorder:focusedBorder,
+                      enabledBorder:enabledBorder,
+                    focusedErrorBorder:errorBorder,
+                    errorBorder:errorBorder
                   ),
                 ),
               ),
@@ -170,24 +182,26 @@ final fNameEditingCtrl=TextEditingController();
                   fontWeight:FontWeight.w700,color:Colors.black87))),
               SizedBox(height:4,),
               SizedBox(
-                height:55,
+                height:80,
                 width:MediaQuery.of(context).size.width/1.2,
-                child:TextField(
+                child:TextFormField(
                   controller:mnoEditingCtrl,
                   keyboardType:TextInputType.number,
+                  inputFormatters:<TextInputFormatter>[
+                    FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                  ],
+                  maxLength:10,
+                  validator:(arg)=>validateField(arg:arg,fields:Fields.Mno),
                   decoration:InputDecoration(
                       hintText:StringsUtils.enterPhoneNo,
                       prefixIcon:Icon(Icons.phone,color:Colors.black87,),
                       hintStyle:TextStyle(fontSize:14,
                           color:Colors.black38.withOpacity(0.2),fontWeight:FontWeight.w600,fontStyle:FontStyle.italic),
-                      focusedBorder:OutlineInputBorder(
-                          borderRadius:BorderRadius.circular(2.0),
-                          borderSide:BorderSide(width:1.6,color:Colors.black87)
-                      ),
-                      enabledBorder:OutlineInputBorder(
-                          borderRadius:BorderRadius.circular(2.0),
-                          borderSide:BorderSide(width:1.4,color:Colors.black87)
-                      )
+                      focusedBorder:focusedBorder,
+                      enabledBorder:enabledBorder,
+                    errorBorder:errorBorder,
+                    focusedErrorBorder:errorBorder,
+                    helperText:' '
                   ),
                 ),
               ),
@@ -196,24 +210,22 @@ final fNameEditingCtrl=TextEditingController();
                   fontWeight:FontWeight.w700,color:Colors.black87))),
               SizedBox(height:4,),
               SizedBox(
-                height:55,
+                height:80,
                 width:MediaQuery.of(context).size.width/1.2,
-                child:TextField(
+                child:TextFormField(
                   controller:emailEditingCtrl,
                   keyboardType:TextInputType.emailAddress,
+                  validator:(arg)=>validateField(arg:arg,fields:Fields.Email),
                   decoration:InputDecoration(
                       hintText:StringsUtils.enterEmail,
                       prefixIcon:Icon(Icons.email,color:Colors.black87,),
                       hintStyle:TextStyle(fontSize:14,
                           color:Colors.black38.withOpacity(0.2),fontWeight:FontWeight.w600,fontStyle:FontStyle.italic),
-                      focusedBorder:OutlineInputBorder(
-                          borderRadius:BorderRadius.circular(2.0),
-                          borderSide:BorderSide(width:1.6,color:Colors.black87)
-                      ),
-                      enabledBorder:OutlineInputBorder(
-                          borderRadius:BorderRadius.circular(2.0),
-                          borderSide:BorderSide(width:1.4,color:Colors.black87)
-                      )
+                      focusedBorder:focusedBorder,
+                      enabledBorder:enabledBorder,
+                    errorBorder:errorBorder,
+                    focusedErrorBorder:errorBorder,
+                    helperText:' '
                   ),
                 ),
               ),
@@ -224,6 +236,7 @@ final fNameEditingCtrl=TextEditingController();
                 mainAxisAlignment:MainAxisAlignment.spaceEvenly,
                 children: [
                   Radio(
+
                       value:GenderEnum.Male,
                     groupValue:selectedGender,
                     onChanged:(value){
@@ -233,7 +246,7 @@ final fNameEditingCtrl=TextEditingController();
                     },
                   ),
                   Text(StringsUtils.male,style:GoogleFonts.notoSans(textStyle:TextStyle(fontSize:14,height:2,
-                      color:Colors.black87))),
+                      color:selectedGender==null && autoValidate==true?Colors.red:Colors.black87))),
                   SizedBox(width: 40,),
                   Radio(
                     value:GenderEnum.Female,
@@ -253,26 +266,29 @@ final fNameEditingCtrl=TextEditingController();
                   fontWeight:FontWeight.w700,color:Colors.black87))),
               SizedBox(height:4,),
               SizedBox(
-                height:55,
+                height:80,
                 width:MediaQuery.of(context).size.width/1.2,
-                child:TextField(
+                child:TextFormField(
                   controller:passwordEditingCtrl,
+                  obscureText:isVisible==false?true:false,
+                  validator:(arg)=>validateField(arg:arg,fields:Fields.Password),
                   decoration:InputDecoration(
                       hintText:StringsUtils.password,
                       prefixIcon:Icon(Icons.lock,color:Colors.black87,),
-                      suffixIcon:IconButton(icon:Icon(Icons.visibility_off),
+                      suffixIcon:IconButton(icon:Icon(isVisible==false?Icons.visibility_off:Icons.visibility_outlined),
                           color:ColorUtils.colorConvert(ColorUtils.primaryColor),
-                          onPressed:(){}),
+                          onPressed:(){
+                          setState(() {
+                            isVisible==false?isVisible=true:isVisible=false;
+                          });
+                          }),
                       hintStyle:TextStyle(fontSize:14,
                           color:Colors.black38.withOpacity(0.2),fontWeight:FontWeight.w600,fontStyle:FontStyle.italic),
-                      focusedBorder:OutlineInputBorder(
-                          borderRadius:BorderRadius.circular(2.0),
-                          borderSide:BorderSide(width:1.6,color:Colors.black87)
-                      ),
-                      enabledBorder:OutlineInputBorder(
-                          borderRadius:BorderRadius.circular(2.0),
-                          borderSide:BorderSide(width:1.4,color:Colors.black87)
-                      )
+                      focusedBorder:focusedBorder,
+                      enabledBorder:enabledBorder,
+                    errorBorder:errorBorder,
+                    focusedErrorBorder:errorBorder,
+                    helperText:' '
                   ),
                 ),
               ),
@@ -281,23 +297,22 @@ final fNameEditingCtrl=TextEditingController();
                   fontWeight:FontWeight.w700,color:Colors.black87))),
               SizedBox(height:4,),
               SizedBox(
-                height:55,
+                height:80,
                 width:MediaQuery.of(context).size.width/1.2,
-                child:TextField(
+                child:TextFormField(
                   controller:confirmPasswordEditingCtrl,
+                  obscureText:true,
+                  validator:(arg)=>validateField(arg:arg,fields:Fields.Password),
                   decoration:InputDecoration(
                       hintText:StringsUtils.password,
                       prefixIcon:Icon(Icons.lock,color:Colors.black87,),
                       hintStyle:TextStyle(fontSize:14,
                           color:Colors.black38.withOpacity(0.2),fontWeight:FontWeight.w600,fontStyle:FontStyle.italic),
-                      focusedBorder:OutlineInputBorder(
-                          borderRadius:BorderRadius.circular(2.0),
-                          borderSide:BorderSide(width:1.6,color:Colors.black87)
-                      ),
-                      enabledBorder:OutlineInputBorder(
-                          borderRadius:BorderRadius.circular(2.0),
-                          borderSide:BorderSide(width:1.4,color:Colors.black87)
-                      )
+                      focusedBorder:focusedBorder,
+                      helperText:' ',
+                      enabledBorder:enabledBorder,
+                      errorBorder:errorBorder,
+                    focusedErrorBorder:errorBorder
                   ),
                 ),
               ),
@@ -312,16 +327,18 @@ final fNameEditingCtrl=TextEditingController();
                   TextStyle(fontSize:16,height:2,
                       fontWeight:FontWeight.w700,color:Colors.white))),
                   onPressed:(){
-                   final users=Users(fName:fNameEditingCtrl.text,
-                       lName:lNameEditingCtrl.text,
-                   email:emailEditingCtrl.text,mno:mnoEditingCtrl.text,
-                   password:passwordEditingCtrl.text,gender:selectedGender.toString());
-                   /*if (users.fName.isNotEmpty) {
-                     usersBloc.addUsers(users);
-                   } */
-                   Navigator.of(context).push(MaterialPageRoute(builder:(context){
-                     return ProfessionalPageInfo(users:users,);
-                   }));
+                   if (_formKey.currentState.validate()) {
+                     _formKey.currentState.save();
+                     setState(() {
+                       autoValidate = true;
+                     });
+                   }
+                   if (fNameEditingCtrl.text.length>3 && lNameEditingCtrl.text.length>3 && mnoEditingCtrl.text.length>0
+                   &&isEmailValid==true && ispasswordValid==true && isConfirmPassword==true) {
+                     addDataAndNavigate();
+                   }
+                   print("VALIDATE ${_formKey.currentState}");
+
                     // Navigator.pushNamed(context,'/ProfessionaInfoPage');
                   },
                 ),
@@ -428,4 +445,98 @@ final fNameEditingCtrl=TextEditingController();
       });
     }
   }
+
+  void addDataAndNavigate() {
+    final users=Users(fName:fNameEditingCtrl.text,
+        lName:lNameEditingCtrl.text,
+        email:emailEditingCtrl.text,mno:mnoEditingCtrl.text,
+        password:passwordEditingCtrl.text,gender:selectedGender.toString(),);
+    if (croppedImage!=null) {
+      users.profileUrl=croppedImage.path;
+    }
+
+
+    Navigator.of(context).push(MaterialPageRoute(builder:(context){
+      return ProfessionalPageInfo(users:users,);
+    }));
+  }
+
+  validateField({String arg,Fields fields})
+  {
+    switch(fields){
+      case Fields.Fname:
+        if (arg.length<=3) {
+          return 'First name should more than 3 characters';
+        }
+        else{
+          isValidate=true;
+          return null;
+        }
+        break;
+      case Fields.lname:
+        if (arg.length<=3) {
+          return 'Last name should more than 3 characters';
+        }
+        else{
+          isValidate=true;
+          return null;
+        }
+        break;
+      case Fields.Email:
+        if (RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(arg)==false) {
+          return 'Invalid email';
+        }
+        else{
+          isEmailValid=true;
+          isValidate=true;
+          return null;
+        }
+        break;
+      case Fields.Mno:
+        if (arg.length<10) {
+          return 'Invalid Phone Number';
+        }
+        else{
+          isValidate=true;
+          return null;
+        }
+        break;
+      case Fields.Password:
+
+        if (passwordEditingCtrl.text==confirmPasswordEditingCtrl.text) {
+          isConfirmPassword=true;
+
+          if (arg.contains(RegExp(r'\W')) && RegExp(r'\d+\w*').hasMatch(arg)) {
+            ispasswordValid=true;
+            return null;
+          }
+          else{
+            return 'Password should be 1 number,character & symbols';
+          }
+         }
+         else{
+          isConfirmPassword=false;
+
+           return 'Password & confirm password dosent match';
+         }
+        break;
+      default:
+        {
+          print("default");
+        }
+        break;
+    }
+  }
+  var errorBorder=OutlineInputBorder(
+  borderRadius:BorderRadius.circular(2.0),
+  borderSide:BorderSide(width:1.6,color:Colors.red));
+
+  var focusedBorder=OutlineInputBorder(
+      borderRadius:BorderRadius.circular(2.0),
+      borderSide:BorderSide(width:1.6,color:Colors.black87)
+  );
+  var enabledBorder=OutlineInputBorder(
+      borderRadius:BorderRadius.circular(2.0),
+      borderSide:BorderSide(width:1.4,color:Colors.black87)
+  );
 }

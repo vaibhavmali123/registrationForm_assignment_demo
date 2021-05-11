@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -62,12 +64,15 @@ class MyHomePageState extends State<MyHomePage>
                           children: [
                             Container(
                               height:90,
-                              // margin:EdgeInsets.only(top:25),
+                               color:Colors.white,
+                               margin:EdgeInsets.only(left:5),
                               child:Row(
                                 children: [
                                   Expanded(
                                     flex:1,
-                                    child:Icon(Icons.account_circle,size:60,),
+                                    child:snapshot.data[index].profileUrl!=null?
+                                    ClipOval(child:Image.file(File(snapshot.data[index].profileUrl)),)
+                                        :Icon(Icons.account_circle,size:60,),
                                   ),
                                   Expanded(
                                       flex:4,
@@ -97,7 +102,7 @@ class MyHomePageState extends State<MyHomePage>
                         ),
                       );
                   }):Center(
-                child:Text('No Data'),
+                child:Text(StringsUtils.noData),
               );
           }
           return CircularProgressIndicator();
@@ -161,7 +166,12 @@ class MyHomePageState extends State<MyHomePage>
                               shape:BoxShape.circle,
                               border:Border.all(width:1,color:Colors.black54)
                           ),
-                          child:Icon(Icons.clear,size:20,),
+                          child:GestureDetector(
+                            onTap:(){
+                              Navigator.pop(context);
+                            },
+                            child:Icon(Icons.clear,size:20,),
+                          ),
                         )
                       ],
                     ),
@@ -170,7 +180,7 @@ class MyHomePageState extends State<MyHomePage>
                       mainAxisAlignment:MainAxisAlignment.spaceEvenly,
                       children: [
                         Expanded(
-                          flex:5,
+                          flex:7,
                           child:
                           Container(
                             margin:EdgeInsets.only(left:8,top:12),
@@ -179,8 +189,9 @@ class MyHomePageState extends State<MyHomePage>
                               children: [
                                 Text(StringsUtils.basicInfo,style:GoogleFonts.notoSans(textStyle:TextStyle(fontSize:16,
                                     fontWeight:FontWeight.w800,color:Colors.black87)),),
-                                Icon(Icons.account_circle,size:80,),
-                                Text(users.email,style:GoogleFonts.notoSans(textStyle:TextStyle(fontSize:10,
+                            users.profileUrl!=null?ClipOval(child:Image.file(File(users.profileUrl,),width:65,height:65,),)
+                                :Icon(Icons.account_circle,size:60,),
+                                Text(users.email,style:GoogleFonts.notoSans(textStyle:TextStyle(fontSize:12,
                                     fontWeight:FontWeight.w400,color:ColorUtils.colorConvert(ColorUtils.primaryColor))),),
                                 SizedBox(height:2,),
                                 Text(users.mno,style:GoogleFonts.notoSans(textStyle:TextStyle(fontSize:15,
@@ -248,10 +259,10 @@ class MyHomePageState extends State<MyHomePage>
                           Text(StringsUtils.professionalInfo,style:GoogleFonts.notoSans(textStyle:TextStyle(fontSize:16,
                               fontWeight:FontWeight.w800,color:Colors.black87)),),
                           SizedBox(height:2,),
-                          Text(StringsUtils.experience+' Years of experience',style:GoogleFonts.notoSans(textStyle:TextStyle(fontSize:14,
+                          Text(users.experience+' Years of experience',style:GoogleFonts.notoSans(textStyle:TextStyle(fontSize:14,
                               color:Colors.black87)),),
                           SizedBox(height:2,),
-                          Text(StringsUtils.designation,style:GoogleFonts.notoSans(textStyle:TextStyle(fontSize:14,
+                          Text("Designation: "+users.domain,style:GoogleFonts.notoSans(textStyle:TextStyle(fontSize:14,
                               color:Colors.black87)),),
                         ],
                       ),

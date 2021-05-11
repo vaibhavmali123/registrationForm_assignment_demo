@@ -49,6 +49,7 @@ class DatabaseProvider
         "email TEXT, "
         "gender TEXT, "
         "password TEXT, "
+        "profileUrl TEXT, "
         "eduInfo TEXT, "
         "yearOfPass TEXT, "
         "grade TEXT, "

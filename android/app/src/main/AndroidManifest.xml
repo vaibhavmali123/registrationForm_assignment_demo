@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.arraypointer.registrationform_assignment">
    <application
-        android:label="registrationform_assignment"
+        android:label="Registration Assignment"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

@@ -1,5 +1,6 @@
 class StringsUtils
 {
+  static String noData='No users found please register';
   static String users='Users';
   static String register='Register';
   static String yourInfo='Your Info';
@@ -48,7 +49,7 @@ class StringsUtils
   static String pin='Pin Code';
   static String submit='Submit';
   static String basicInfo='Basic Info';
-
+static String sucessMsg='User registration successful';
 
 
 

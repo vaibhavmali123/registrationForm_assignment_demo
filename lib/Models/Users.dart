@@ -17,13 +17,14 @@ class Users
   String grade;
   String experience;
   String designation;
+  String profileUrl;
   String domain;
 
   bool isDone = false;
 
   Users({this.id, this.fName,this.lName,this.mno,this.email,this.gender,
     this.password,this.address,this.landmark,this.city,this.state,this.pincode,
-    this.eduInfo,this.yearOfPass,this.grade,this.experience,this.designation,this.domain,
+    this.eduInfo,this.yearOfPass,this.grade,this.experience,this.designation,this.domain,this.profileUrl,
     this.isDone = false});
 
   factory Users.fromDatabaseJson(Map<String, dynamic> data) => Users(
@@ -45,6 +46,7 @@ class Users
     experience:data['experience'],
     designation:data['designation'],
     domain:data['domain'],
+    profileUrl:data['profileUrl'],
     isDone: data['is_done'] == 0 ? false : true,
   );
 
@@ -67,6 +69,7 @@ class Users
     'city':this.city,
     'state':this.state,
     'pincode':this.pincode,
+    'profileUrl':this.profileUrl,
     "is_done": this.isDone == false ? 0 : 1,
   };
 }
