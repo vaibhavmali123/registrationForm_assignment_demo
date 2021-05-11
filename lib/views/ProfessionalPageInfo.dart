@@ -65,7 +65,6 @@ class ProfessionalPageInfoState extends State<ProfessionalPageInfo>
                   child:Column(
                     children: [
                       getEducationalInfo(),
-                      SizedBox(height:14,),
                       getProfessionalInfo()
                     ],
                   ))
@@ -175,7 +174,6 @@ class ProfessionalPageInfoState extends State<ProfessionalPageInfo>
                   ),
                 ),
               ),
-              SizedBox(height:5,),
               Text(StringsUtils.grade+'*',style:GoogleFonts.notoSans(textStyle:TextStyle(fontSize:14,height:2,
                   fontWeight:FontWeight.w700,color:Colors.black87))),
               SizedBox(height:4,),

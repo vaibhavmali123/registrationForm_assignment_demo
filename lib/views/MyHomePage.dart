@@ -31,7 +31,7 @@ class MyHomePageState extends State<MyHomePage>
     return Scaffold(
         appBar:AppBar(
           backgroundColor:Colors.white,
-          elevation:0,
+          elevation:3,
           title:Text(StringsUtils.users,style:GoogleFonts.notoSans(textStyle:TextStyle(fontSize:20,
           fontWeight:FontWeight.w800,color:Colors.black87)),),
           centerTitle:true,
@@ -54,7 +54,8 @@ class MyHomePageState extends State<MyHomePage>
         builder:(context,AsyncSnapshot<List<Users>> snapshot){
           if (snapshot.hasData) {
             return
-              snapshot.data.length>0?ListView.builder(
+              snapshot.data.length>0?
+              ListView.builder(
                   itemCount:snapshot.data.length,
                   itemBuilder:(context,index){
                     return
